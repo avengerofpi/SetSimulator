@@ -33,41 +33,41 @@ class Set:
 
     def debugPrintDetails(self, s = ""):
         s and self.debugPrint(s)
-        debugPrint("  Hand size / Deck size: {0:>2d} / {1:2>d}".format(len(self.hand), len(self.mainDeck)))
+        debugPrint("  Hand size / Deck size: {0:>2d} / {1:2>d}".format(len(self.hand), len(self.deck)))
         debugPrint("  Current Hand: {}".format(self.hand))
 
     def __init__(self):
-        self.deck = [card for card in product(range(3), range(3), range(3), range(3))]
-        self.mainDeck = None
+        self.wholeDeck = [card for card in product(range(3), range(3), range(3), range(3))]
+        self.deck = None
         self.hand = None
         self.setsFound = None
 
     def shuffle(self):
         # Shuffle the deck
         debugPrint("Shuffing the deck")
-        shuffle(self.deck)
+        shuffle(self.wholeDeck)
 
     def resetGame(self):
         self.debugPrint("Resetting the whole game (deck, mainDeck, hand, setsFound)")
         self.shuffle()
-        self.mainDeck = None
+        self.deck = None
         self.hand = None
         self.setsFound = None
 
     def dealFirstHand(self):
-        self.hand = self.mainDeck[0:self.DEAL_SIZE_INIT]
-        self.mainDeck = self.mainDeck[self.DEAL_SIZE_INIT:]
+        self.hand = self.deck[0:self.DEAL_SIZE_INIT]
+        self.deck = self.deck[self.DEAL_SIZE_INIT:]
         self.debugPrintDetails("First hand has been dealt:")
 
     def dealMore(self):
-        self.hand.extend(self.mainDeck[0:self.DEAL_SIZE_ADD])
-        self.mainDeck = self.mainDeck[self.DEAL_SIZE_ADD:]
+        self.hand.extend(self.deck[0:self.DEAL_SIZE_ADD])
+        self.deck = self.deck[self.DEAL_SIZE_ADD:]
         self.debugPrintDetails("Dealt {} more cards to hand:".format(self.DEAL_SIZE_ADD))
 
     def startNewRound(self):
         self.debugPrint("Starting new round")
         self.resetGame()
-        self.mainDeck = self.deck
+        self.deck = self.wholeDeck
         self.dealFirstHand()
 
     def removeRandomSetFromHand(self):
@@ -104,7 +104,7 @@ class Set:
         startTime = time()
         maxEndTime = startTime + self.MAX_PLAY_DURATION
         self.debugPrint("\n\nstartTime: {}\nendTime:   {}\n\n".format(startTime, maxEndTime))
-        while (len(self.hand) and self.updateSetsFound()) or (len(self.mainDeck) > 0):
+        while (len(self.hand) and self.updateSetsFound()) or (len(self.deck) > 0):
             currentTime = time()
             secondsLeft = maxEndTime - currentTime
             self.debugPrint("\n\ncurrentTime: {}\nendTime:     {}\nsecondsLeft: {}\n\n".format(currentTime, maxEndTime, secondsLeft))
@@ -115,7 +115,7 @@ class Set:
                 self.removeRandomSetFromHand()
             else:
                 self.debugPrint("NO sets found...")
-                if len(self.mainDeck) == 0:
+                if len(self.deck) == 0:
                     self.debugPrint("we are done")
                     # No sets and no more cards to deal. This round is done.
                     break
