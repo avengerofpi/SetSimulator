@@ -141,7 +141,7 @@ class Set:
 
 freqDigits = int(log10(iters))
 freqDict = defaultdict(int)
-print("Running {} trials...".format(iters))
+print("Running {0:,} trials...".format(iters))
 set = Set()
 for i in range(iters):
     debugPrint("beginning iteration {0:>{1}d}".format(i, freqDigits))
