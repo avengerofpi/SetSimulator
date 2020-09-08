@@ -47,7 +47,7 @@ class Set:
         self.hand = None
         self.setFound = None
 
-    def shuffleDeck(self):
+    def shuffleWholeDeck(self):
         # Shuffle the deck
         debugPrint("Shuffling the deck")
         shuffle(self.wholeDeck)
@@ -61,7 +61,7 @@ class Set:
 
     def resetGame(self):
         self.debugPrint("Resetting the whole game (deck, mainDeck, hand, setFound)")
-        self.shuffleDeck()
+        self.shuffleWholeDeck()
         self.deck = self.wholeDeck
         self.hand = list()
         self.setFound = None
