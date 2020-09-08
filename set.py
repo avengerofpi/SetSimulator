@@ -34,7 +34,7 @@ class Set:
     def debugPrintDetails(self, s = ""):
         s and self.debugPrint(s)
         debugPrint("  Hand size / Deck size: {0:>2d} / {1:2>d}".format(len(self.hand), len(self.deck)))
-        debugPrint("  Current Hand: {}".format(self.hand))
+        debugPrint("  Current Hand(sorted): {}".format(sorted(self.hand)))
 
     def __init__(self):
         self.wholeDeck = [card for card in product(range(3), range(3), range(3), range(3))]
@@ -42,14 +42,21 @@ class Set:
         self.hand = None
         self.setFound = None
 
-    def shuffle(self):
+    def shuffleDeck(self):
         # Shuffle the deck
-        debugPrint("Shuffing the deck")
+        debugPrint("Shuffling the deck")
         shuffle(self.wholeDeck)
+
+    def shuffleHand(self):
+        # Shuffle the hand (to help ensure randomness in looking for sets)
+        # Using this instead of set.pop() since I'm think(!) that's not necessarily as
+        # random (though it is probably more efficient...)
+        debugPrint("Shuffling the hand")
+        shuffle(self.hand)
 
     def resetGame(self):
         self.debugPrint("Resetting the whole game (deck, mainDeck, hand, setFound)")
-        self.shuffle()
+        self.shuffleDeck()
         self.deck = None
         self.hand = None
         self.setFound = None
@@ -57,10 +64,12 @@ class Set:
     def dealFirstHand(self):
         self.hand = self.deck[0:self.DEAL_SIZE_INIT]
         self.deck = self.deck[self.DEAL_SIZE_INIT:]
+        self.shuffleHand()
         self.debugPrintDetails("First hand has been dealt:")
 
     def dealMore(self):
         self.hand.extend(self.deck[0:self.DEAL_SIZE_ADD])
+        self.shuffleHand()
         self.deck = self.deck[self.DEAL_SIZE_ADD:]
         self.debugPrintDetails("Dealt {} more cards to hand:".format(self.DEAL_SIZE_ADD))
 
