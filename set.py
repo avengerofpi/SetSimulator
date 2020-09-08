@@ -12,6 +12,8 @@ from time import time, sleep
 from collections import defaultdict
 from math import log10
 
+iters = 100
+
 numbrDict = { 0: "One",     1: "Two",      2: "Three" }
 shapeDict = { 0: "Diamond", 1: "Squiggle", 2: "Oval"}
 shadeDict = { 0: "Solid",   1: "Stripe",   2: "Open" }
@@ -137,7 +139,6 @@ class Set:
         self.debugPrint(self.hand)
         return self.hand
 
-iters = 10
 freqDigits = int(log10(iters))
 freqDict = defaultdict(int)
 print("Running {} trials...".format(iters))
