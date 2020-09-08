@@ -13,7 +13,7 @@ from time import time, sleep
 from collections import defaultdict
 from math import log10
 
-iters = 100
+iters = 1000
 debug = False
 
 # Not used yet...want to produce pretty printing...change to class fields ^_^
