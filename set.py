@@ -13,13 +13,13 @@ from collections import defaultdict
 from math import log10
 
 iters = 100
+debug = False
 
 numbrDict = { 0: "One",     1: "Two",      2: "Three" }
 shapeDict = { 0: "Diamond", 1: "Squiggle", 2: "Oval"}
 shadeDict = { 0: "Solid",   1: "Stripe",   2: "Open" }
 colorDict = { 0: "Red",     1: "Green",    2: "Color-blind Blue" }
 
-debug = False
 def debugPrint(args):
     if debug:
         print(args)
