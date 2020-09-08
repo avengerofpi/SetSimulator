@@ -40,7 +40,7 @@ class Set:
         self.wholeDeck = [card for card in product(range(3), range(3), range(3), range(3))]
         self.deck = None
         self.hand = None
-        self.setsFound = None
+        self.setFound = None
 
     def shuffle(self):
         # Shuffle the deck
@@ -48,11 +48,11 @@ class Set:
         shuffle(self.wholeDeck)
 
     def resetGame(self):
-        self.debugPrint("Resetting the whole game (deck, mainDeck, hand, setsFound)")
+        self.debugPrint("Resetting the whole game (deck, mainDeck, hand, setFound)")
         self.shuffle()
         self.deck = None
         self.hand = None
-        self.setsFound = None
+        self.setFound = None
 
     def dealFirstHand(self):
         self.hand = self.deck[0:self.DEAL_SIZE_INIT]
@@ -70,26 +70,25 @@ class Set:
         self.deck = self.wholeDeck
         self.dealFirstHand()
 
-    def removeRandomSetFromHand(self):
+    def removeSetFromHand(self):
         # meh, just grab the first set found
-        setToRemove = self.setsFound[0]
-        self.debugPrint("Removing a set that was found: {}".format(setToRemove))
-        for card in setToRemove:
+        self.debugPrint("Removing a set that was found: {}".format(self.setFound))
+        for card in self.setFound:
             self.debugPrint(" Removing card '{}'".format(card))
             self.hand.remove(card)
         self.debugPrintDetails()
 
-    def updateSetsFound(self):
-        self.setsFound = list()
+    def lookForASet(self):
+        self.setFound = list()
 
         # !!!!! FAKE SET FINDING CODE - FILL IN REAL LOGIC LATER !!!!!
-        self.setsFound = (self.hand[:3],)
+        self.setFound = self.hand[:3]
 
-        self.debugPrint("Looking for new sets")
-        self.debugPrint("  Found sets: {}".format(self.setsFound))
+        self.debugPrint("Looking for new set")
+        self.debugPrint("  Found set: {}".format(self.setFound))
         self.debugPrintDetails()
 
-        return self.setsFound
+        return self.setFound
 
 
     # Play a single round or Set, starting with a new shuffled deck.
@@ -100,26 +99,26 @@ class Set:
         self.startNewRound()
 
         # Play until no more deck and no more sets can be found
-        # Perform the updateSetsFound() function first to ensure it is always run (beware shortcircuiting!)
+        # Perform the '(len(self.hand) and self.lookForASet())' first to ensure it is always run (beware shortcircuiting!)
         startTime = time()
         maxEndTime = startTime + self.MAX_PLAY_DURATION
         self.debugPrint("\n\nstartTime: {}\nendTime:   {}\n\n".format(startTime, maxEndTime))
-        while (len(self.hand) and self.updateSetsFound()) or (len(self.deck) > 0):
+        while (len(self.hand) and self.lookForASet()) or (len(self.deck) > 0):
             currentTime = time()
             secondsLeft = maxEndTime - currentTime
             self.debugPrint("\n\ncurrentTime: {}\nendTime:     {}\nsecondsLeft: {}\n\n".format(currentTime, maxEndTime, secondsLeft))
             if time() > maxEndTime:
                 raise RuntimeError("The current round is taking too long - max runtime is {} seconds".format(self.MAX_PLAY_DURATION))
-            if self.setsFound:
-                self.debugPrint("{} sets found, proceed to remove one...".format(len(self.setsFound)))
-                self.removeRandomSetFromHand()
+            if self.setFound:
+                self.debugPrint("{} sets found, proceed to remove one...".format(len(self.setFound)))
+                self.removeSetFromHand()
             else:
                 self.debugPrint("NO sets found...")
                 if len(self.deck) == 0:
                     self.debugPrint("we are done")
                     # No sets and no more cards to deal. This round is done.
                     break
-            if (not self.setsFound) or (len(self.hand) < self.DEAL_MORE_CARDS_THRESHOLD ):
+            if (not self.setFound) or (len(self.hand) < self.DEAL_MORE_CARDS_THRESHOLD ):
                 self.dealMore()
         self.debugPrint(self.hand)
         return self.hand
