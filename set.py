@@ -2,8 +2,9 @@
 
 """
 TODO:
-    use the numbrDict, etc's for nice printing (maybe just in debug prints???)
-    Better OOP...globals, sometimes functions return, sometimes not...
+    use the numbrDict, shapeDict, etc, to add a nice printCard method
+    clean up the debugging shit...gawdz!
+    call mom
 """
 
 from random import shuffle
@@ -15,6 +16,7 @@ from math import log10
 iters = 100
 debug = False
 
+# Not used yet...want to produce pretty printing...change to class fields ^_^
 numbrDict = { 0: "One",     1: "Two",      2: "Three" }
 shapeDict = { 0: "Diamond", 1: "Squiggle", 2: "Oval"}
 shadeDict = { 0: "Solid",   1: "Stripe",   2: "Open" }
