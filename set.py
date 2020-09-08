@@ -26,9 +26,10 @@ def debugPrint(args):
         sleep(0.025)
 
 class Set:
-    DEAL_SIZE_INIT = 12
-    DEAL_SIZE_ADD = 3
-    DEAL_MORE_CARDS_THRESHOLD = DEAL_SIZE_INIT
+    NUM_CATEGORIES = 4
+    SET_SIZE = 3
+    INIT_HAND_SIZE = NUM_CATEGORIES * SET_SIZE
+    DRAW_THRESHOLD = INIT_HAND_SIZE
 
     def debugPrint(self, s):
         debugPrint(s)
@@ -39,7 +40,7 @@ class Set:
         debugPrint("  Current Hand(sorted): {}".format(sorted(self.hand)))
 
     def __init__(self):
-        self.wholeDeck = [card for card in product(range(3), range(3), range(3), range(3))]
+        self.wholeDeck = list(product( *(range(self.SET_SIZE) for _ in range(self.NUM_CATEGORIES)) ))
         self.deck = None
         self.hand = None
         self.setFound = None
@@ -59,26 +60,27 @@ class Set:
     def resetGame(self):
         self.debugPrint("Resetting the whole game (deck, mainDeck, hand, setFound)")
         self.shuffleDeck()
-        self.deck = None
-        self.hand = None
+        self.deck = self.wholeDeck
+        self.hand = list()
         self.setFound = None
 
+    def dealCards(self, n):
+        self.hand.extend(self.deck[0:n])
+        self.deck = self.deck[n:]
+
     def dealFirstHand(self):
-        self.hand = self.deck[0:self.DEAL_SIZE_INIT]
-        self.deck = self.deck[self.DEAL_SIZE_INIT:]
+        self.dealCards(self.INIT_HAND_SIZE)
         self.shuffleHand()
         self.debugPrintDetails("First hand has been dealt:")
 
-    def dealMore(self):
-        self.hand.extend(self.deck[0:self.DEAL_SIZE_ADD])
+    def draw(self):
+        self.dealCards(self.SET_SIZE)
         self.shuffleHand()
-        self.deck = self.deck[self.DEAL_SIZE_ADD:]
-        self.debugPrintDetails("Dealt {} more cards to hand:".format(self.DEAL_SIZE_ADD))
+        self.debugPrintDetails("Dealt {} more cards to hand:".format(self.SET_SIZE))
 
     def startNewRound(self):
         self.debugPrint("Starting new round")
         self.resetGame()
-        self.deck = self.wholeDeck
         self.dealFirstHand()
 
     def removeSetFromHand(self):
@@ -90,13 +92,9 @@ class Set:
         self.debugPrintDetails()
 
     def lookForASet(self):
-        self.setFound = list()
-
-        # !!!!! FAKE SET FINDING CODE - FILL IN REAL LOGIC LATER !!!!!
-        #self.setFound = self.hand[:3]
-
-        for maybeSet in combinations(self.hand, 3):
-            if all(len({card[i] for card in maybeSet}) != 2 for i in range(4)):
+        self.setFound = None
+        for maybeSet in combinations(self.hand, self.SET_SIZE):
+            if all(len({card[i] for card in maybeSet}) in [1, self.SET_SIZE] for i in range(self.NUM_CATEGORIES)):
                 self.setFound = maybeSet
                 break
 
@@ -134,8 +132,8 @@ class Set:
                     self.debugPrint("we are done")
                     # No sets and no more cards to deal. This round is done.
                     break
-            if (not self.setFound) or (len(self.hand) < self.DEAL_MORE_CARDS_THRESHOLD ):
-                self.dealMore()
+            if (not self.setFound) or (len(self.hand) < self.DRAW_THRESHOLD ):
+                self.draw()
         self.debugPrint(self.hand)
         return self.hand
 
