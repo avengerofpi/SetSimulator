@@ -7,7 +7,7 @@ TODO:
 """
 
 from random import shuffle
-from itertools import product
+from itertools import product, combinations
 from time import time, sleep
 from collections import defaultdict
 from math import log10
@@ -82,7 +82,12 @@ class Set:
         self.setFound = list()
 
         # !!!!! FAKE SET FINDING CODE - FILL IN REAL LOGIC LATER !!!!!
-        self.setFound = self.hand[:3]
+        #self.setFound = self.hand[:3]
+
+        for maybeSet in combinations(self.hand, 3):
+            if all(len({card[i] for card in maybeSet}) != 2 for i in range(4)):
+                self.setFound = maybeSet
+                break
 
         self.debugPrint("Looking for new set")
         self.debugPrint("  Found set: {}".format(self.setFound))
