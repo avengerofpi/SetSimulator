@@ -112,7 +112,7 @@ class Set:
         self.debugPrint("Playing a new round")
         self.startNewRound()
 
-        # Play until no more deck and no more sets can be found
+        # Play until the deck is empty and no more sets can be found
         # Perform the '(len(self.hand) and self.lookForASet())' first to ensure it is always run (beware shortcircuiting!)
         startTime = time()
         maxEndTime = startTime + self.MAX_PLAY_DURATION
@@ -140,6 +140,7 @@ class Set:
 iters = 10
 freqDigits = int(log10(iters))
 freqDict = defaultdict(int)
+print("Running {} trials...".format(iters))
 set = Set()
 for i in range(iters):
     debugPrint("beginning iteration {0:>{1}d}".format(i, freqDigits))
