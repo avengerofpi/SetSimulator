@@ -147,5 +147,6 @@ for i in range(iters):
     freqDict[len(set.hand)] += 1
 
 for (size, freq) in sorted(freqDict.items()):
-    print("Size: {0:>2d}  Freq: {1:>{2}d}".format(size, freq, freqDigits))
+    percent = freq / iters * 100
+    print("Remaining Cards: {0:>2d}    Freq: {1:>{2}d}    Percent: {3:>6.2f}".format(size, freq, freqDigits, percent))
 
