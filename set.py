@@ -167,7 +167,8 @@ start = time()
 for i in range(iters):
     debugPrint("beginning iteration {0:>{1}d}".format(i, freqDigits))
     game.playOneRound()
-    freqDict[len(game.hand)] += 1
+    size = len(game.hand)
+    freqDict[size] += 1
 end = time()
 avgTimePerRound = (end - start) / iters
 print("  {0:6.3f} seconds per game (avg)".format(avgTimePerRound))
