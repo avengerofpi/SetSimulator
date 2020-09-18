@@ -32,6 +32,7 @@ class Set:
     SET_SIZE = 3
     INIT_HAND_SIZE = NUM_CATEGORIES * SET_SIZE
     DRAW_THRESHOLD = INIT_HAND_SIZE
+    MAX_PLAY_DURATION = 130 # max seconds / hand
 
     def debugPrint(self, s):
         debugPrint(s)
@@ -109,7 +110,6 @@ class Set:
 
     # Play a single round or Set, starting with a new shuffled deck.
     # Include a timer mechanism to kill the round if it's taking too  long.
-    MAX_PLAY_DURATION = 20 # seconds
     def playOneRound(self):
         self.debugPrint("Playing a new round")
         self.startNewRound()
@@ -124,7 +124,16 @@ class Set:
             secondsLeft = maxEndTime - currentTime
             self.debugPrint("\n\ncurrentTime: {}\nendTime:     {}\nsecondsLeft: {}\n\n".format(currentTime, maxEndTime, secondsLeft))
             if time() > maxEndTime:
-                raise RuntimeError("The current round is taking too long - max runtime is {} seconds".format(self.MAX_PLAY_DURATION))
+                errorMsg = """The current round is taking too long - max runtime is {} seconds
+Current state:
+    Main deck size: {}
+    Hand      size: {}""".format(self.MAX_PLAY_DURATION, len(self.deck), len(self.hand))
+
+                self.hand = self.wholeDeck
+                print(errorMsg)
+                break
+
+                #raise RuntimeError(errorMsg)
             if self.setFound:
                 self.debugPrint("{} sets found, proceed to remove one...".format(len(self.setFound)))
                 self.removeSetFromHand()
@@ -143,10 +152,18 @@ freqDigits = int(log10(iters))
 freqDict = defaultdict(int)
 print("Running {0:,} trials...".format(iters))
 set = Set()
+
+print("Timing:")
+print("  {}s max play duration / round".format(game.MAX_PLAY_DURATION))
+start = time()
 for i in range(iters):
     debugPrint("beginning iteration {0:>{1}d}".format(i, freqDigits))
     set.playOneRound()
     freqDict[len(set.hand)] += 1
+end = time()
+avgTimePerRound = (end - start) / iters
+print("  {0:6.3f} seconds per game (avg)".format(avgTimePerRound))
+print("")
 
 for (size, freq) in sorted(freqDict.items()):
     percent = freq / iters * 100
