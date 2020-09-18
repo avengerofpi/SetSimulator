@@ -152,8 +152,8 @@ Current state:
 
 freqDigits = int(log10(iters))
 freqDict = defaultdict(int)
+game = Set()
 print("Running {0:,} trials...".format(iters))
-set = Set()
 print("Shuffle hand after draw: {}".format(game.EXTRA_SHUFFLING))
 print("")
 
@@ -162,8 +162,8 @@ print("  {}s max play duration / round".format(game.MAX_PLAY_DURATION))
 start = time()
 for i in range(iters):
     debugPrint("beginning iteration {0:>{1}d}".format(i, freqDigits))
-    set.playOneRound()
-    freqDict[len(set.hand)] += 1
+    game.playOneRound()
+    freqDict[len(game.hand)] += 1
 end = time()
 avgTimePerRound = (end - start) / iters
 print("  {0:6.3f} seconds per game (avg)".format(avgTimePerRound))
