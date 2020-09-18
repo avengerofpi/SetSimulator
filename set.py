@@ -33,6 +33,7 @@ class Set:
     INIT_HAND_SIZE = NUM_CATEGORIES * SET_SIZE
     DRAW_THRESHOLD = INIT_HAND_SIZE
     MAX_PLAY_DURATION = 130 # max seconds / hand
+    EXTRA_SHUFFLING = False
 
     def debugPrint(self, s):
         debugPrint(s)
@@ -57,8 +58,9 @@ class Set:
         # Shuffle the hand (to help ensure randomness in looking for sets)
         # Using this instead of set.pop() since I'm think(!) that's not necessarily as
         # random (though it is probably more efficient...)
-        debugPrint("Shuffling the hand")
-        shuffle(self.hand)
+        if self.EXTRA_SHUFFLING:
+            debugPrint("Shuffling the hand")
+            shuffle(self.hand)
 
     def resetGame(self):
         self.debugPrint("Resetting the whole game (deck, mainDeck, hand, setFound)")
@@ -152,6 +154,8 @@ freqDigits = int(log10(iters))
 freqDict = defaultdict(int)
 print("Running {0:,} trials...".format(iters))
 set = Set()
+print("Shuffle hand after draw: {}".format(game.EXTRA_SHUFFLING))
+print("")
 
 print("Timing:")
 print("  {}s max play duration / round".format(game.MAX_PLAY_DURATION))
